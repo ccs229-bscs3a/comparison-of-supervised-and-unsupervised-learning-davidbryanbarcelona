@@ -26,25 +26,29 @@ def app():
     point based on its features.
     \n**K-Nearest Neighbors (KNN):**
     KNN is a simple yet powerful algorithm for both classification and regression tasks. 
-    \n**The Iris Dataset:**
-    The Iris dataset is a popular benchmark dataset in machine learning. It contains information about 150 
-    iris flowers from three different species: Iris Setosa, Iris Versicolor, and Iris Virginica. 
-    Each flower is described by four features:
-    * Sepal length (cm)
-    * Sepal width (cm)
-    * Petal length (cm)
-    * Petal width (cm)
-    \n**KNN Classification with Iris:**
+    \n**The Mushroom Dataset:**
+    This dataset includes descriptions of hypothetical samples corresponding to 23 species of 
+    gilled mushrooms in the Agaricus and Lepiota Family Mushroom, drawn from The Audubon Society 
+    Field Guide to North American Mushrooms (1981). It contains 200 samples of mushrooms which are 
+    identified as either edible or poisonous.\n
+    Each mushrooms have the following features:
+    * Cap Diameter (cm)
+    * Cap Shape
+    * Cap Surface
+    * Stem Height (cm)
+    * Stem width (cm)
+    * etc.
+    \n**KNN Classification with Mushroom Edibility:**
     \n1. **Training:**
     * The KNN algorithm stores the entire Iris dataset (features and labels) as its training data.
     \n2. **Prediction:**
-    * When presented with a new iris flower (unknown species), KNN calculates the distance (often Euclidean distance) 
-    between this flower's features and all the flowers in the training data.
+    * When presented with a new mushroom (unseen data), KNN calculates the distance (often Euclidean distance) 
+    between this mushroom's features and all the mushrooms in the training data.
     * The user defines the value of 'k' (number of nearest neighbors). KNN identifies the 'k' closest 
-    data points (flowers) in the training set to the new flower.
-    * KNN predicts the class label (species) for the new flower based on the majority vote among its 
-    'k' nearest neighbors. For example, if three out of the five nearest neighbors belong to Iris Setosa, 
-    the new flower is classified as Iris Setosa.
+    data points (mushrooms) in the training set to the new mushroom.
+    * KNN predicts the class label (edibility) for the new mushroom based on the majority vote among its 
+    'k' nearest neighbors. For example, if three out of the five nearest neighbors belong to edible, 
+    the mushroom is classified as edible.
     **Choosing 'k':**
     The value of 'k' significantly impacts KNN performance. A small 'k' value might lead to overfitting, where the 
     model performs well on the training data but poorly on unseen data. Conversely, a large 'k' value might not 
@@ -62,11 +66,11 @@ def app():
         value=5,  # Initial value
     )
 
-    if st.button("Begin"):
+    if st.button("Start"):
         # Load the Iris dataset
-        iris = datasets.load_iris()
-        X = iris.data  # Features
-        y = iris.target  # Target labels (species)
+        mushroom = pd.read_csv('mushroom.csv')
+        X = mushroom[['cap-diameter', 'stem-height', 'stem-width']] # Features 
+        y = mushroom['class']  # Target labels (edibility)
 
         # KNN for supervised classification (reference for comparison)
 
@@ -93,12 +97,12 @@ def app():
         for label, color in zip(unique_labels, colors):
             indices = y_pred == label
             # Use ax.scatter for consistent plotting on the created axis
-            ax.scatter(X[indices, 0], X[indices, 1], label=iris.target_names[label], c=color)
+            ax.scatter(X.loc[indices, 'cap-diameter'], X.loc[indices, 'stem-height'], label=label, c=color)
 
         # Add labels and title using ax methods
-        ax.set_xlabel('Sepal length (cm)')
-        ax.set_ylabel('Sepal width (cm)')
-        ax.set_title('Sepal Length vs Width Colored by Predicted Iris Species')
+        ax.set_xlabel('Cap Diameter (cm)')
+        ax.set_ylabel('Stem Height (cm)')
+        ax.set_title('Cap Diameter vs Stem Height by Predicted Mushroom Edibility')
 
         # Add legend and grid using ax methods
         ax.legend()
@@ -109,3 +113,4 @@ def app():
 #run the app
 if __name__ == "__main__":
     app()
+    
